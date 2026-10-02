@@ -6,7 +6,12 @@ auth, RBAC, fairness and accounting), **quantum-api** (projects, budgets,
 billing), **quantum-dashboard**, a dedicated **Keycloak**, RustFS (S3 object store), Redis and
 Postgres — everything on a bare IP with a self-signed certificate. No FQDN,
 no DNS, no CA. Point an unmodified IQM client (Qiskit/Cirq/Qrisp) at it and
-run circuits against a mock device or a real machine.
+run circuits against a mock device or a real machine. Developed in the context
+of the **QTech Piemonte** strategic initiative.
+
+<a href="https://linksfoundation.com"><img src="docs/assets/logo-links.png" alt="LINKS Foundation" height="60"></a>&nbsp;&nbsp;&nbsp;<a href="https://www.polito.it"><img src="docs/assets/logo-polito.png" alt="Politecnico di Torino" height="60"></a>&nbsp;&nbsp;&nbsp;<a href="https://www.inrim.it"><img src="docs/assets/logo-inrim.jpg" alt="INRIM" height="60"></a>
+
+---
 
 Intended for development and integration experiments — the official
 dev/staging environment remains the integration-test target. **Never expose
