@@ -1,0 +1,4 @@
+# Component checkouts (cloned by install.sh per components.env)
+/nginx-reverse-proxy/
+/quantum-api/
+/quantum-dashboard/

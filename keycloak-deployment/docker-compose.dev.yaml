@@ -1,0 +1,59 @@
+# The portable environment's Keycloak — self-signed TLS, no FQDN, no backups,
+# Keycloak's own login theme. install.sh drives it: it generates the
+# certificate (gen-dev-certs.sh) and secret_conf.dev.env, starts this file with
+# KC_DEV_HOSTNAME set, and runs bootstrap-dev-realm.sh for the realm, its
+# clients, roles and test users.
+#
+# HTTPS is published on 8843 (the 8000-9000 range); the URL structure keeps
+# the production /auth relative path: https://<host-ip>:8843/auth
+
+services:
+  keycloak_web:
+    image: quay.io/keycloak/keycloak:26.3.2
+    container_name: keycloak_web_dev
+    env_file:
+      - ./secret_conf.dev.env
+    environment:
+      TZ: Europe/Rome
+
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://keycloakdb:5432/keycloak
+      KC_DB_USERNAME: keycloak
+
+      KC_LOG_LEVEL: info
+      KC_METRICS_ENABLED: true
+      KC_HEALTH_ENABLED: true
+      KC_BOOTSTRAP_ADMIN_USERNAME: admin
+
+      # HTTP stays container-internal (not published) — used by kcadm in
+      # bootstrap-dev-realm.sh; external access is HTTPS on :8843 only.
+      KC_HTTP_ENABLED: true
+      KC_HTTPS_CERTIFICATE_FILE: /certs/keycloak.crt
+      KC_HTTPS_CERTIFICATE_KEY_FILE: /certs/keycloak.key
+      KC_HOSTNAME: "https://${KC_DEV_HOSTNAME:-127.0.0.1}:8843/auth"
+      KC_HTTP_RELATIVE_PATH: "/auth"
+      KC_HOSTNAME_STRICT: false
+    command: start
+    volumes:
+      - ./certs:/certs:ro
+    depends_on:
+      - keycloakdb
+    restart: unless-stopped
+    ports:
+      - "8843:8443"
+
+  keycloakdb:
+    image: postgres:17
+    container_name: keycloakdb_dev
+    restart: unless-stopped
+    volumes:
+      - postgres_data_dev:/var/lib/postgresql/data
+    env_file:
+      - ./secret_conf.dev.env
+    environment:
+      TZ: Europe/Rome
+      POSTGRES_DB: keycloak
+      POSTGRES_USER: keycloak
+
+volumes:
+  postgres_data_dev:
