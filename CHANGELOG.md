@@ -18,6 +18,44 @@ re-install (a teardown, a new prerequisite, or a changed flag).
 
 ## [Unreleased]
 
+## [2026.11.0] — 2026-11-10
+
+### Added
+- **The SLURM variant, `install.sh --with-slurm`**, off by default. It adds a
+  containerised SLURM cluster
+  ([LINKS-Foundation-CPE/vhpc](https://github.com/LINKS-Foundation-CPE/vhpc),
+  Slurm 23.11.10) with the
+  [prolog/epilog](https://github.com/LINKS-Foundation-CPE/Lagrange-prolog-epilog)
+  that mint per-job QPU tokens. It configures the gateway's `sqed` plugins
+  and quantum-api's `USERNAME_FORMAT=any` and `JOB_PORTAL_ONLY=true`. It seeds a
+  cluster user (`--cluster-user`, default `user`) with no e-mail, and registers
+  a remote `qpu` license. The images are built locally, under compose project
+  `portable-slurm`. `teardown.sh` removes the cluster too. See
+  `docs/slurm-variant.md`.
+
+### Security
+- **`GITLAB_TOKEN` is sent only to the GitLab host.** It went, as an HTTP
+  header, to the host of every component URL, so a component cloned from
+  anywhere else (a public mirror on GitHub, say) would have received the GitLab
+  token. It now goes only to `GIT_BASE`'s host, or to `GITLAB_HOST` when set;
+  any other host is cloned with plain `git`.
+
+### Changed
+- **Component pins move to the components' 2026.11.0 releases**: gateway
+  `2aa6923`, quantum-api `31292d1`, dashboard `ffb87ab`. The gateway pin
+  leaves `staging`, because its `main` is now RustFS-only, which is what a
+  fresh install needs. They bring:
+  - quantum-api: the Brotli CVE hardening and the default-project scope check;
+  - gateway: the sweep-limit fix and the October 2026 CA roots;
+  - dashboard: the default-project pickers;
+  - the Sqed support the SLURM variant relies on, off by default.
+
+### Fixed
+- The smoke tests give each endpoint up to two minutes. The dashboard's dev
+  container installs its packages before it listens, and on a small host the
+  install failed on a 502 from a dashboard that was up a minute later, before
+  the post-install hooks had run.
+
 ## [2026.10.0] — 2026-10-02
 
 ### Added

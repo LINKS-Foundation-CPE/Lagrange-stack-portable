@@ -2,3 +2,7 @@
 /nginx-reverse-proxy/
 /quantum-api/
 /quantum-dashboard/
+
+# The SLURM / Sqed variant's checkouts
+/slurm-docker-compose/
+/prolog-epilog/

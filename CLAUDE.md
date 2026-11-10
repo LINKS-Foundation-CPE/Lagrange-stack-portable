@@ -74,13 +74,14 @@ Review each cherry-pick before pushing — the `public` branch is the gate
 that prevents internal details from leaking to GitHub. Never
 `git push github main:main` or rebase `public` onto `main` directly.
 
-### Component-access caveat for the public mirror
+### `components.env` and `components-sqed.env` differ on `public`
 
-`components.env` defaults to the **private GitLab** repositories. A public
-clone of this repo works, but `install.sh` can only fetch the components
-with GitLab access (or with `GIT_BASE`/per-component overrides pointing at
-public mirrors — today only the gateway has one:
-`github.com/LINKS-Foundation-CPE/QC-Gateway`).
+On `public`, both manifests point at the **GitHub** repositories (`QC-Gateway`,
+`Lagrange-API`, `Lagrange-Dashboard`, `Lagrange-prolog-epilog`; the SLURM test
+bed is on GitHub on both branches) and pin their **release tags**, since
+private commit IDs do not exist there. They are the files maintained separately
+on `public`: never cherry-pick a pin bump from `main`; when a component
+releases, edit them on `public` to its new tag.
 
 ### Adding the `github` remote (first-time setup on a new clone)
 

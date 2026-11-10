@@ -114,6 +114,19 @@ Note: access tokens expire after the realm default (~5 min) — re-fetch as
 needed. In notebooks, set `REQUESTS_CA_BUNDLE` via `os.environ` **before**
 creating the `IQMProvider`.
 
+## The SLURM variant
+
+`--with-slurm` also stands up a containerised SLURM cluster and configures the
+stack for **Sqed**, the *Slurm-based Quantum Execution Director*: batch jobs
+submit circuits with per-job tokens minted by a SLURM prolog, and the portal
+becomes a job viewer. Off by default; the default install has nothing to do with
+SLURM. What it adds and how to run a circuit through it:
+[`docs/slurm-variant.md`](docs/slurm-variant.md).
+
+```bash
+./install.sh --ip <host-ip> --machine-url https://<mock-or-qc> --token <IQM_SERVER_TOKEN> --with-slurm
+```
+
 ## Components
 
 | Directory | What it is | Where it comes from |
@@ -121,6 +134,8 @@ creating the `IQMProvider`.
 | `nginx-reverse-proxy` | QC Gateway | cloned by the installer, at the pin in `components.env` |
 | `quantum-api` | portal backend | cloned by the installer, at the pin in `components.env` |
 | `quantum-dashboard` | portal UI (Vite dev server) | cloned by the installer, at the pin in `components.env` |
+| `prolog-epilog` | SLURM prolog/epilog, `--with-slurm` only | cloned by the installer, at the pin in `components-sqed.env` |
+| `slurm-docker-compose` | the SLURM test bed, `--with-slurm` only | cloned by the installer from [LINKS-Foundation-CPE/vhpc](https://github.com/LINKS-Foundation-CPE/vhpc), at the pin in `components-sqed.env` |
 | `keycloak-deployment` | this environment's Keycloak: compose file, certificate generator, realm bootstrap | **part of this repository**; Keycloak's own login theme |
 
 The certificate `keycloak-deployment/gen-dev-certs.sh` writes to

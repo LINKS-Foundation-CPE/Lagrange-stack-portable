@@ -109,13 +109,19 @@ gitlab_git() { # $1=HTTPS repository URL; remaining arguments are passed to git
     git "$@"
     return
   fi
-  git_config_url=$(python3 - "$repo_url" <<'PY'
+  # The token is GitLab's: it is sent only to the GitLab host (GITLAB_HOST, by
+  # default GIT_BASE's), never to another host a component may live on, such
+  # as a public mirror on GitHub. Those are cloned with plain git.
+  git_config_url=$(python3 - "$repo_url" "${GITLAB_HOST:-${GIT_BASE:-}}" <<'PY'
 from urllib.parse import urlsplit
 import sys
 
 url = urlsplit(sys.argv[1])
 if url.scheme != "https" or not url.hostname or url.username or url.password:
     raise SystemExit(1)
+gitlab = urlsplit(sys.argv[2] if "://" in sys.argv[2] else "https://" + sys.argv[2])
+if url.hostname != gitlab.hostname or url.port != gitlab.port:
+    raise SystemExit(0)  # not the GitLab host: print nothing, send no token
 host = f"[{url.hostname}]" if ":" in url.hostname else url.hostname
 if url.port:
     host += f":{url.port}"
@@ -125,6 +131,10 @@ PY
     echo "ERROR: component repository URL must be HTTPS without embedded credentials: $repo_url"
     exit 1
   }
+  if [ -z "$git_config_url" ]; then
+    git "$@"
+    return
+  fi
   GIT_CONFIG_COUNT=1 \
     GIT_CONFIG_KEY_0="http.${git_config_url}.extraheader" \
     GIT_CONFIG_VALUE_0="$GITLAB_AUTH_HEADER" \
@@ -317,9 +327,17 @@ run_hooks seed
 
 
 step "Smoke tests"
+# Each endpoint gets up to two minutes. The dashboard's dev container runs
+# `npm install` before Vite listens, and on a small host that outlasts the
+# seeding: the proxy answers 502 until then, and the install failed on a stack
+# that came up fine moments later.
 ok=1
 for u in "8000/health" "8500/metrics/jobs" "8080/" "8940/" "9000/minio/health/live" "8843/auth/realms/cortex"; do
-  code=$(curl -s --cacert "$CERT" -m 10 -o /dev/null -w '%{http_code}' "https://${HOST_IP}:${u}" || true)
+  for _ in $(seq 1 40); do
+    code=$(curl -s --cacert "$CERT" -m 10 -o /dev/null -w '%{http_code}' "https://${HOST_IP}:${u}" || true)
+    [ "$code" = "200" ] && break
+    sleep 3
+  done
   printf '  https://%s:%-28s %s\n' "$HOST_IP" "$u" "$code"
   [ "$code" = "200" ] || ok=0
 done
