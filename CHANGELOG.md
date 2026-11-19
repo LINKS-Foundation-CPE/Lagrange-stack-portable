@@ -18,6 +18,16 @@ re-install (a teardown, a new prerequisite, or a changed flag).
 
 ## [Unreleased]
 
+## [2026.11.1] — 2026-11-19
+
+### Fixed
+- **The default install (without `--with-slurm`) failed at the config stage.**
+  The SLURM variant's `config` hook ended with `[ "$WITH_SLURM" = 1 ] && …`,
+  which is false when the variant is not selected; the hook is sourced under
+  `set -e`, so the installer stopped silently after generating
+  `quantum-api/.env`. 2026.11.0 is affected. `install.d/README.md` now states
+  that a hook must end with status 0.
+
 ## [2026.11.0] — 2026-11-10
 
 ### Added

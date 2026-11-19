@@ -43,4 +43,6 @@ fi
 # post stage. Matters on a RE-RUN, where .env already carries
 # JOB_PORTAL_ONLY=true from the previous install: the seeding step drives the
 # very endpoints that flag removes, and would 404 its way out of the installer.
-[ "$WITH_SLURM" = 1 ] && set_env quantum-api/.env JOB_PORTAL_ONLY false
+if [ "$WITH_SLURM" = 1 ]; then
+  set_env quantum-api/.env JOB_PORTAL_ONLY false
+fi

@@ -21,6 +21,11 @@ on), `PORTS`, `EXTRA_ARGS`, `NO_START`, and everything `components.env`
 defines. `set -euo pipefail` is in force: a failing command in a hook stops the
 installer, so guard what is best-effort with `|| true`.
 
+**A hook must end with status 0.** It is sourced, so its status is that of its
+last command, and a non-zero one stops the installer. Write conditionals as
+`if …; then …; fi`, never as a closing `[ … ] && …`: that line is false
+whenever the condition is, which is every install the hook does not apply to.
+
 `teardown.d/*.sh` append `"<directory>:<compose flags>"` to `SPECS`; teardown
 skips a directory that is not there.
 
