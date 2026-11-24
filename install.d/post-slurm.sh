@@ -163,9 +163,9 @@ EOF
       # persists). Not through the repo's packages.yml: that installs before
       # slurmctld starts, and this one takes long enough (minutes) to fail the
       # headnode's healthcheck, so compose never starts the workers.
-      echo "  installing iqm-client[qiskit] into the shared venv"
+      echo "  installing iqm-client[qiskit]==${IQM_CLIENT_VERSION} into the shared venv"
       docker compose exec -T slurm-headnode /opt/venv/bin/pip install -q \
-        'iqm-client[qiskit]==34.0.3' >/dev/null \
+        "iqm-client[qiskit]==${IQM_CLIENT_VERSION}" >/dev/null \
         || echo "  WARNING: could not install iqm-client[qiskit] — jobs cannot submit circuits"
       docker compose exec -T slurm-headnode bash -c \
         "mkdir -p /shared/${CLUSTER_USER} && chown ${CLUSTER_USER}: /shared/${CLUSTER_USER}"

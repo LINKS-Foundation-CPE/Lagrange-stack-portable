@@ -12,6 +12,10 @@ CLUSTER_USER=${CLUSTER_USER:-user}
 # The SLURM account the cluster user's jobs are billed to: the project the
 # quantum-api seed creates.
 CLUSTER_PROJECT=${CLUSTER_PROJECT:-dev-project}
+# The iqm-client release installed into the cluster's shared venv. It must be
+# one the machine behind the gateway accepts: QCCSW 4.6.x takes 34.x, 4.7.x
+# 36.x, 4.8.x 37.x. The default is unchanged from earlier releases.
+IQM_CLIENT_VERSION=${IQM_CLIENT_VERSION:-34.0.3}
 _rest=()
 while [ ${#EXTRA_ARGS[@]} -gt 0 ]; do
   case "${EXTRA_ARGS[0]}" in

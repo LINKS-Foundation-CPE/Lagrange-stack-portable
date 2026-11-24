@@ -26,7 +26,7 @@ Slurm from source, which takes tens of minutes on a cold cache.
 | **A cluster user** | `user` (or `--cluster-user <name>`), in Keycloak with no e-mail, and in the backend. Its SLURM account is `dev-project`. Password: `CLUSTERUSER_PASSWORD` in `keycloak-deployment/dev-credentials.env`. |
 | **Gateway settings** | `SITE_PLUGIN=sqed`, `AUTH_PLUGINS=keycloak,sqed`, `SQED_DEFAULT_ROLES=cortex_user,pulla_user`. |
 | **Backend settings** | `USERNAME_FORMAT=any`, set before the first start, and `JOB_PORTAL_ONLY=true`, set after the seeding (the seed uses the endpoints the flag removes). |
-| **On the cluster** | `iqm-client[qiskit]` in the shared venv `/opt/venv`, and `/shared/user` holding the development CA as `keycloak.crt`. |
+| **On the cluster** | `iqm-client[qiskit]` in the shared venv `/opt/venv` (version `34.0.3`; set `IQM_CLIENT_VERSION` to match the machine's IQM OS, e.g. `37.0.0` for QCCSW 4.8), and `/shared/user` holding the development CA as `keycloak.crt`. |
 
 `teardown.sh` brings the cluster down with the rest of the stack.
 

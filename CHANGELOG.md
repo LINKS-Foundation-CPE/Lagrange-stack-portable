@@ -18,7 +18,12 @@ re-install (a teardown, a new prerequisite, or a changed flag).
 
 ## [Unreleased]
 
-## [2026.11.1] — 2026-11-19
+## [2026.11.1] — 2026-11-24
+
+### Added
+- `IQM_CLIENT_VERSION` (default `34.0.3`, as before) sets the iqm-client
+  release `--with-slurm` installs into the cluster's shared venv, so the test
+  bed can follow the machine's IQM OS (QCCSW 4.8 needs 37.x).
 
 ### Fixed
 - **The default install (without `--with-slurm`) failed at the config stage.**
@@ -160,6 +165,8 @@ the point open-sourcing preparation was completed.
   the other components of the stack; README Licensing section and `CLAUDE.md`
   conventions.
 
-[Unreleased]: https://github.com/LINKS-Foundation-CPE/Lagrange-stack-portable/compare/2026.10.0...HEAD
+[Unreleased]: https://github.com/LINKS-Foundation-CPE/Lagrange-stack-portable/compare/2026.11.1...HEAD
+[2026.11.1]: https://github.com/LINKS-Foundation-CPE/Lagrange-stack-portable/compare/2026.11.0...2026.11.1
+[2026.11.0]: https://github.com/LINKS-Foundation-CPE/Lagrange-stack-portable/releases/tag/2026.11.0
 [2026.10.0]: https://github.com/LINKS-Foundation-CPE/Lagrange-stack-portable/releases/tag/2026.10.0
 [2026.07.0]: https://github.com/LINKS-Foundation-CPE/Lagrange-stack-portable/releases/tag/2026.07.0
